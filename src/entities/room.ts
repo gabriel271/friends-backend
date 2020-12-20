@@ -1,23 +1,22 @@
-import { Socket } from "socket.io"
-import User from "./user";
+import { Socket } from "socket.io";
 
-class  Room {
-    numberMax: number;
+class Room {
+    name: string;
+    participants: Socket[];
     id: string;
-    participants: User[];
-    
-    constructor(numberMax: number = 10, id: string) {
+
+    constructor(name: string, id: string) {
         this.participants = [];
-        this.numberMax = numberMax;
+        this.name = name;
         this.id = id;
     }
 
-    addUser(user: User) {
-        this.participants.push(user);
+    addUser(socket: Socket) {
+        this.participants.push(socket);
     }
 
-    removeUser(user: User) {
-        this.participants = this.participants.filter(({ socket }) => socket.id !== user.socket.id);
+    removeUser(socket: Socket) {
+        this.participants = this.participants.filter(({ id }) => id !== socket.id);
     }
 }
 
