@@ -1,25 +1,24 @@
 import {Socket} from "socket.io";
-import Room from "../entities/room";
-import roomEventsIO from "./roomEventsIO";
+import User from '../entities/user';
 
 class UserEventsIO {
-    login(socket: Socket, userList: Socket[], roomList: Room[]) {
+    login(socket: Socket, users: User[]) {
         socket.on('login', () => {
-            this.addUser(socket, userList);
-            roomEventsIO.listRooms(roomList, socket);
+            const user = new User(socket.id, socket);
+            this.addUser(user, users);
         });
     }
 
-    logOff(socket: Socket, list: Socket[]) {
-        this.removeUser(socket, list);
+    logOff(user: User, users: User[]) {
+        this.removeUser(user, users);
     }
 
-    addUser(socket: Socket, list: Socket[]) {
-        list.push(socket);
+    addUser(user: User, users: User[]) {
+        users.push(user);
     }
 
-    removeUser(socket: Socket, list: Socket[]) {
-        list = list.filter(({ id }) => id !== socket.id);
+    removeUser(user: User, users: User[]) {
+        users = users.filter(({ id }) => id !== user.id);
     }
 }
 
