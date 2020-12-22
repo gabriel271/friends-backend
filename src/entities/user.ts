@@ -2,12 +2,12 @@ import { Socket } from "socket.io";
 
 class User {
     id: string;
-    socket: Socket;
+    socketIo: Socket;
     room: null | string;
 
     constructor(id: string, socket: Socket) {
         this.id = socket.id;
-        this.socket = socket;
+        this.socketIo = socket;
         this.room = null;
     }
 

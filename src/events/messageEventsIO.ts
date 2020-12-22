@@ -5,7 +5,7 @@ class MessageEventsIO {
     sentMesage(socket: Socket, users: User[]) {
         socket.on('sentmesage', (data) => {
             users.forEach((user) => {
-                user.socket.emit('newmesage', (data));
+                user.socketIo.emit('newmesage', (data));
             });
         });
     }

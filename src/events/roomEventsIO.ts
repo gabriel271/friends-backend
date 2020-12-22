@@ -5,46 +5,49 @@ import crypto from 'crypto';
 
 class RoomEventsIO {
     listRooms(list: Room[], socket: Socket) {
-        socket.emit('listrooms', list);
+        socket.emit('listrooms', JSON.stringify(list));
     }
 
-    getRooms(rooms: Room[], socket: Socket) {
-        socket.on('getrooms', () => this.listRooms(rooms, socket));
-    }
-
-    joinRoom(rooms: Room[], user: User) {
-        user.socket.on('joinroom', (data) => {
-            user.room = data.room;
-            rooms.forEach((room) => {
-                if(room.id === data.room) room.addUser(user);
+    joinRoom(rooms: Room[], socket: Socket, users: User[]) {
+        socket.on('joinroom', (data) => {
+            users.forEach((user) => {
+                if(user.id === socket.id) {
+                    user.room = data.room;
+                    rooms.forEach((room, index) => {
+                        if(user.room === room.id) {
+                            console.log('TEST')
+                            room.participants.push(user);
+                        }
+                    });
+                }
             });
         });
     }
 
     leftRoom(rooms: Room[], socket: Socket) {
         socket.on('leftroom', (data) => {
-            rooms.forEach((room) => {
-                if(room.id === data.room) room.removeUser(socket.id);
+            let position = -1;
+            rooms.forEach((room, index) => {
+                if(room.id === data.room) {
+                    room.removeUser(socket.id);
+                    if(room.participants.length === 0) {
+                        position = index;
+                    }
+                }
             });
-            rooms = rooms.filter((room) => 0 !== room.participants.length);
-            console.log(rooms.length);
+            if(position >= 0) rooms.splice(position, 1);
         });
     }
 
-    createRoom(rooms: Room[], socket: Socket, users: User[]) {
+    createRoom(rooms: Room[], socket: Socket) {
         socket.on('createroom', (data) => {
             const id = crypto.randomBytes(5).toString('hex');
+            console.log(id)
             const room = new Room(data.name, id, Math.abs(Number(data.max)));
             rooms.push(room);
-            users.forEach((user) => {
-                this.listRooms(rooms, socket);
-            });
+            this.listRooms(rooms, socket);
             console.log(rooms.length, 'salas criadas');
         });
-    }
-
-    deleteRoom(rooms: Room[], roomId: string) {
-        rooms = rooms.filter(({ id }) => id !== roomId);
     }
 }
 

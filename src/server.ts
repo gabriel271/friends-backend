@@ -18,10 +18,11 @@ const users: User[] = [];
 const rooms: Room[] = [];
 
 io.on('connection', (socket: Socket) => {
-    console.log(users.length + 1, 'clientes conectados');
     userEventsIO.login(socket, users);
-    roomEventsIO.createRoom(rooms, socket, users);
-    roomEventsIO.getRooms(rooms, socket);
+    userEventsIO.logOff(socket, users);
+    roomEventsIO.createRoom(rooms, socket);
+    roomEventsIO.leftRoom(rooms, socket);
+    roomEventsIO.joinRoom(rooms, socket, users);
     messageEventsIO.sentMesage(socket, users);
 });
 server.listen(PORT as number, HOST, () => console.log(`server running: http://${HOST}:${PORT}`));
