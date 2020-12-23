@@ -1,0 +1,30 @@
+"use strict";
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+var express_1 = __importDefault(require("express"));
+var socket_io_1 = __importDefault(require("socket.io"));
+var http_1 = __importDefault(require("http"));
+var cors_1 = __importDefault(require("cors"));
+var userEventsIO_1 = __importDefault(require("./events/userEventsIO"));
+var roomEventsIO_1 = __importDefault(require("./events/roomEventsIO"));
+var messageEventsIO_1 = __importDefault(require("./events/messageEventsIO"));
+var HOST = process.env.HOST || 'localhost';
+var PORT = process.env.PORT || 8080;
+var app = express_1.default();
+app.use(cors_1.default());
+var server = http_1.default.createServer(app);
+var io = new socket_io_1.default.Server(server, { cors: { origin: '*' } });
+var users = [];
+var rooms = [];
+io.on('connection', function (socket) {
+    userEventsIO_1.default.login(socket, users);
+    userEventsIO_1.default.logOff(socket, users, rooms);
+    roomEventsIO_1.default.createRoom(rooms, socket);
+    roomEventsIO_1.default.getRooms(rooms, socket);
+    roomEventsIO_1.default.leftRoom(rooms, socket);
+    roomEventsIO_1.default.joinRoom(rooms, socket, users);
+    messageEventsIO_1.default.sentMesage(socket, users);
+});
+server.listen(PORT, HOST, function () { return console.log("server running: http://" + HOST + ":" + PORT); });

@@ -24,6 +24,6 @@ io.on('connection', (socket: Socket) => {
     roomEventsIO.getRooms(rooms, socket);
     roomEventsIO.leftRoom(rooms, socket);
     roomEventsIO.joinRoom(rooms, socket, users);
-    messageEventsIO.sentMesage(socket, users);
+    messageEventsIO.sentMesage(socket, users, rooms);
 });
 server.listen(PORT as number, HOST, () => console.log(`server running: http://${HOST}:${PORT}`));
