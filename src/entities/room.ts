@@ -1,8 +1,6 @@
-import User from "./user";
-
 class Room {
     name: string;
-    participants: User[];
+    participants: string[];
     id: string;
     max: number;
 
@@ -13,12 +11,12 @@ class Room {
         this.max = max
     }
 
-    addUser(user: User) {
+    addUser(user: string) {
         this.participants.push(user);
     }
 
-    removeUser(user: string) {
-        this.participants = this.participants.filter(({ id }) => id !== user);
+    removeUser(userId: string) {
+        this.participants = this.participants.filter((user) => userId !== user);
     }
 }
 

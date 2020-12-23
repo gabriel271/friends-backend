@@ -4,8 +4,14 @@ import User from '../entities/user';
 import crypto from 'crypto';
 
 class RoomEventsIO {
-    listRooms(list: Room[], socket: Socket) {
-        socket.emit('listrooms', JSON.stringify(list));
+    listRooms(rooms: Room[], socket: Socket) {
+        socket.emit('listrooms', JSON.stringify(rooms));
+    }
+
+    getRooms(rooms: Room[], socket: Socket) {
+        socket.on('getrooms', () => {
+            this.listRooms(rooms, socket);
+        })
     }
 
     joinRoom(rooms: Room[], socket: Socket, users: User[]) {
@@ -13,10 +19,9 @@ class RoomEventsIO {
             users.forEach((user) => {
                 if(user.id === socket.id) {
                     user.room = data.room;
-                    rooms.forEach((room, index) => {
+                    rooms.forEach((room) => {
                         if(user.room === room.id) {
-                            console.log('TEST')
-                            room.participants.push(user);
+                            room.participants.push(user.id);
                         }
                     });
                 }
@@ -35,19 +40,22 @@ class RoomEventsIO {
                     }
                 }
             });
-            if(position >= 0) rooms.splice(position, 1);
+            this.deleteRoom(rooms, position);
         });
     }
 
     createRoom(rooms: Room[], socket: Socket) {
         socket.on('createroom', (data) => {
             const id = crypto.randomBytes(5).toString('hex');
-            console.log(id)
             const room = new Room(data.name, id, Math.abs(Number(data.max)));
             rooms.push(room);
             this.listRooms(rooms, socket);
             console.log(rooms.length, 'salas criadas');
         });
+    }
+
+    deleteRoom(rooms: Room[], position: number) {
+        if(position >= 0) rooms.splice(position, 1);
     }
 }
 

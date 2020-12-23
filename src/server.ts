@@ -19,8 +19,9 @@ const rooms: Room[] = [];
 
 io.on('connection', (socket: Socket) => {
     userEventsIO.login(socket, users);
-    userEventsIO.logOff(socket, users);
+    userEventsIO.logOff(socket, users, rooms);
     roomEventsIO.createRoom(rooms, socket);
+    roomEventsIO.getRooms(rooms, socket);
     roomEventsIO.leftRoom(rooms, socket);
     roomEventsIO.joinRoom(rooms, socket, users);
     messageEventsIO.sentMesage(socket, users);
