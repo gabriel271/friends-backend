@@ -10,6 +10,7 @@ const io = new socketIO.Server(PORT as number, {cors: {origin: '*'}});
 const users: User[] = [];
 const rooms: Room[] = [];
 
+// Definindo os eventos que estarão sendo abservados
 io.on('connection', (socket: Socket) => {
     userEventsIO.login(socket, users);
     userEventsIO.logOff(socket, users, rooms);

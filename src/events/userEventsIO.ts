@@ -8,7 +8,6 @@ class UserEventsIO {
         socket.on('login', () => {
             const user = new User(socket.id, socket);
             this.addUser(user, users);
-            console.log(users.length, 'users conectados (entrou)');
         });
     }
 
@@ -25,7 +24,6 @@ class UserEventsIO {
                     }
                 }
             })
-            console.log(users.length, 'users conectados (saiu)');
         });
     }
 
