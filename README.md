@@ -18,6 +18,12 @@ Durante o desenvolvimento dessa palicação eu treinei:
 - POO
 - Sockets
 
+## Tecnologias🧰
+
+- Typescript
+- NodeJS
+- Express 
+
 ## Socket Eventos da aplicação🎬
 
 |Nome       | Dados                                                    | Descrição                                     | 
